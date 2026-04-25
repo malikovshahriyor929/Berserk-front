@@ -1,17 +1,21 @@
 import { z } from 'zod';
 import { createEnv } from '@t3-oss/env-nextjs';
 
+const fallbackNextAuthUrl =
+  process.env.NEXTAUTH_URL ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+
+const fallbackNextAuthSecret =
+  process.env.NEXTAUTH_SECRET || 'build-time-placeholder-nextauth-secret';
+
 export const env = createEnv({
   /*
    * ServerSide Environment variables, not available on the client.
    */
   server: {
     NODE_ENV: z.enum(['development', 'test', 'production']),
-    NEXTAUTH_SECRET:
-        process.env.NODE_ENV === 'production'
-            ? z.string().min(1)
-            : z.string().min(1).optional(),
-    NEXTAUTH_URL: z.string().url(),
+    NEXTAUTH_SECRET: z.string().min(1).default(fallbackNextAuthSecret),
+    NEXTAUTH_URL: z.string().url().default(fallbackNextAuthUrl),
 
     // email
     SMTP_HOST: z.string().optional(),
