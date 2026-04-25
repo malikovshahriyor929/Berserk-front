@@ -1,0 +1,51 @@
+{
+  "name": "milliy-dastur",
+  "version": "7.6.2",
+  "description": "Application for Milliy Dastur",
+  "private": true,
+  "scripts": {
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "type:check": "turbo type:check",
+    "build": "turbo build",
+    "start": "turbo start",
+    "clean": "turbo clean && rm -rf node_modules .turbo",
+    "cache:clean": "turbo cache:clean && rm -rf .turbo",
+    "advisor:dev": "NODE_OPTIONS='--max-old-space-size=4096' turbo dev --filter=advisor",
+    "advisor:lint": "turbo lint --filter=advisor",
+    "advisor:build": "NODE_OPTIONS='--max-old-space-size=4096' turbo build --filter=advisor",
+    "advisor:start": "turbo start --filter=advisor",
+    "advisor:clean": "turbo clean --filter=advisor",
+    "student:dev": "NODE_OPTIONS='--max-old-space-size=4096' turbo dev --filter=student",
+    "student:lint": "turbo lint --filter=student",
+    "student:build": "NODE_OPTIONS='--max-old-space-size=4096' turbo build --filter=student",
+    "student:start": "turbo start --filter=student",
+    "student:clean": "turbo clean --filter=student",
+    "gen-icons": "turbo gen-icons --filter=core",
+    "prepare": "husky",
+    "set:student": "cp project.student.json .vercel/project.json",
+    "set:advisor": "cp project.advisor.json .vercel/project.json",
+    "deploy:student": "pnpm set:student && vercel --prod",
+    "deploy:advisor": "pnpm set:advisor && vercel --prod"
+  },
+  "devDependencies": {
+    "@types/uuid": "^10.0.0",
+    "eslint": "9.23.0",
+    "husky": "^9.1.7",
+    "prettier": "^3.5.3",
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "turbo": "2.4.4",
+    "typescript-config": "workspace:*"
+  },
+  "packageManager": "pnpm@9.1.4",
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "date-fns": "^4.1.0",
+    "framer-motion": "^12.23.0",
+    "lucide-react": "^0.525.0",
+    "uuid": "^11.1.0",
+    "xlsx": "^0.18.5"
+  }
+}
