@@ -94,7 +94,7 @@ export function CourseCard({
             {course.assignedStudents.length > 0 ? (
               <div className="flex items-center">
                 {course.assignedStudents.map(
-                  (student: Student, index: number) => (
+                  (student: Pick<Student, 'id' | 'avatar' | 'username'>, index: number) => (
                     <Tooltip
                       key={student.id}
                       content={student.username}
@@ -112,11 +112,11 @@ export function CourseCard({
                         }}
                       >
                         <Image
-                          src={student.avatar}
+                          src={typeof student.avatar === 'string' ? student.avatar : (student.avatar as any)?.file_name ?? ''}
                           width={28}
                           height={28}
                           className="rounded-full border-2 border-white object-cover shadow-sm dark:border-gray-700"
-                          alt={student.username}
+                          alt={student.username ?? ''}
                         />
                       </div>
                     </Tooltip>

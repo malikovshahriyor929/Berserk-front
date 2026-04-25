@@ -7,7 +7,7 @@ import logoImg from '@public/logo-tashabbus-blue.png';
 import { metaObject } from '@/config/site.config';
 
 export const metadata = {
-  ...metaObject('Sign In'),
+  ...metaObject('Kirish'),
 };
 
 export default function SignIn() {
@@ -15,16 +15,16 @@ export default function SignIn() {
     <AuthWrapperOne
       title={
         <>
-          Welcome back! Please{' '}
+          Xush kelibsiz!{' '}
           <span className="relative inline-block">
-            Sign in to
+            Tizimga kirish
             <UnderlineShape className="absolute -bottom-2 start-0 h-2.5 w-24 text-blue md:w-28 xl:-bottom-1.5 xl:w-36" />
           </span>{' '}
-          continue.
+          uchun ma&apos;lumotlarni kiriting.
         </>
       }
       description=""
-      bannerTitle='"Prezident Iqtidorli Farzandlari" Milliy dasturi'
+      bannerTitle="Moliyaviy hisobot tizimi"
       bannerDescription=""
       isSocialLoginActive={false}
       pageImage={

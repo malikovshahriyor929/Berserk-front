@@ -3,43 +3,44 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 //@ts-ignore
 import { env } from '@/env.mjs';
-import isEqual from 'lodash/isEqual';
 import { pagesOptions } from './pages-options';
 
+const BERSERK_API =
+  (process.env.NEXT_PUBLIC_BERSERK_API_URL || 'http://localhost:5050').replace(/\/+$/, '');
+
 export const authOptions: NextAuthOptions = {
-  // debug: true,
   pages: {
     ...pagesOptions,
   },
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 30 * 24 * 60 * 60,
   },
   callbacks: {
-    async session({ session, token }) {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: token.idToken as string,
-        },
-      };
-    },
     async jwt({ token, user }) {
       if (user) {
-        // return user as JWT
-        token.user = user;
+        token.id = user.id;
+        token.name = user.name;
+        token.email = user.email as string;
+        token.role = user.role;
+        token.accessToken = user.accessToken;
+        token.refreshToken = user.refreshToken;
       }
       return token;
     },
+    async session({ session, token }) {
+      session.user = {
+        ...session.user,
+        id: token.id,
+        name: token.name,
+        email: token.email,
+        role: token.role,
+        accessToken: token.accessToken,
+        refreshToken: token.refreshToken,
+      };
+      return session;
+    },
     async redirect({ url, baseUrl }) {
-      // const parsedUrl = new URL(url, baseUrl);
-      // if (parsedUrl.searchParams.has('callbackUrl')) {
-      //   return `${baseUrl}${parsedUrl.searchParams.get('callbackUrl')}`;
-      // }
-      // if (parsedUrl.origin === baseUrl) {
-      //   return url;
-      // }
       return baseUrl;
     },
   },
@@ -47,25 +48,54 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       id: 'credentials',
       name: 'Credentials',
-      credentials: {},
-      async authorize(credentials: any) {
-        // You need to provide your own logic here that takes the credentials
-        // submitted and returns either a object representing a user or value
-        // that is false/null if the credentials are invalid
-        const user = {
-          email: 'admin@admin.com',
-          password: 'admin',
-        };
+      credentials: {
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null;
 
-        if (
-          isEqual(user, {
-            email: credentials?.email,
-            password: credentials?.password,
-          })
-        ) {
-          return user as any;
+        try {
+          const res = await fetch(`${BERSERK_API}/api/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password,
+            }),
+          });
+
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({ message: '' })) as { message?: string };
+            throw new Error(err?.message || "Email yoki parol noto'g'ri");
+          }
+
+          type UserDto = { id: string; email: string; name: string; role: string };
+          type Tokens = { accessToken: string; refreshToken: string };
+          const data = await res.json() as {
+            userdto?: UserDto; tokens?: Tokens;
+            data?: { accessToken: string; refreshToken: string; user: UserDto };
+            accessToken?: string; refreshToken?: string; user?: UserDto;
+          };
+
+          // Support { userdto, tokens } shape (current backend)
+          const user: UserDto | undefined = data.userdto ?? data.data?.user ?? data.user;
+          const accessToken: string | undefined = data.tokens?.accessToken ?? data.data?.accessToken ?? data.accessToken;
+          const refreshToken: string = data.tokens?.refreshToken ?? data.data?.refreshToken ?? data.refreshToken ?? '';
+
+          if (!accessToken || !user) return null;
+
+          return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role ?? 'USER',
+            accessToken,
+            refreshToken,
+          };
+        } catch (err: any) {
+          throw new Error(err?.message || 'Login amalga oshmadi');
         }
-        return null;
       },
     }),
     GoogleProvider({

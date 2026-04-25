@@ -65,6 +65,18 @@ export const routes = {
   financial: {
     dashboard: '/financial',
   },
+  financialReporting: {
+    dashboard: '/financial/dashboard',
+    upload: '/financial/upload',
+    files: '/financial/files',
+    fileDetails: (id: string) => `/financial/files/${id}`,
+    analyses: '/financial/analyses',
+    analysisDetails: (id: string) => `/financial/analyses/${id}`,
+    templates: '/financial/templates',
+    templateDetails: (id: string) => `/financial/templates/${id}`,
+    reports: '/financial/reports',
+    reportDetails: (id: string) => `/financial/reports/${id}`,
+  },
   podcast: {
     dashboard: '/podcast',
   },

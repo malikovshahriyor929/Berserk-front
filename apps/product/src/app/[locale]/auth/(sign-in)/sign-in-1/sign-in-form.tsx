@@ -1,95 +1,150 @@
 'use client';
 
-import Link from 'next/link';
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { SubmitHandler } from 'react-hook-form';
-import { PiArrowRightBold } from 'react-icons/pi';
-import { Checkbox, Password, Button, Input, Text } from 'rizzui';
-import { Form } from '@core/ui/form';
-import { routes } from '@/config/routes';
-import { loginSchema, LoginSchema } from '@/validators/login.schema';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { PiEye, PiEyeSlash, PiSpinnerGap, PiWarningCircle } from 'react-icons/pi';
 
-const initialValues: LoginSchema = {
-  email: 'admin@admin.com',
-  password: 'admin',
-  rememberMe: true,
-};
+const schema = z.object({
+  email: z.string().email("To'g'ri email kiriting"),
+  password: z.string().min(1, 'Parol kiritilishi shart'),
+});
+
+type FormValues = z.infer<typeof schema>;
 
 export default function SignInForm() {
-  //TODO: why we need to reset it here
-  const [reset, setReset] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
-  const onSubmit: SubmitHandler<LoginSchema> = (data) => {
-    console.log(data);
-    signIn('credentials', {
-      ...data,
-    });
-    // setReset({ email: "", password: "", isRememberMe: false });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: { email: '', password: '' },
+  });
+
+  const onSubmit = async (data: FormValues) => {
+    setIsLoading(true);
+    setServerError(null);
+    try {
+      const result = await signIn('credentials', {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setServerError(
+          result.error === 'CredentialsSignin'
+            ? "Email yoki parol noto'g'ri"
+            : result.error
+        );
+      } else {
+        window.location.href = '/';
+      }
+    } catch {
+      setServerError('Serverga ulanishda xatolik yuz berdi');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <>
-      <Form<LoginSchema>
-        validationSchema={loginSchema}
-        resetValues={reset}
-        onSubmit={onSubmit}
-        useFormProps={{
-          mode: 'onChange',
-          defaultValues: initialValues,
-        }}
-      >
-        {({ register, formState: { errors } }) => (
-          <div className="space-y-5">
-            <Input
-              type="email"
-              size="lg"
-              label="Email"
-              placeholder="Enter your email"
-              className="[&>label>span]:font-medium"
-              inputClassName="text-sm"
-              {...register('email')}
-              error={errors.email?.message}
-            />
-            <Password
-              label="Password"
-              placeholder="Enter your password"
-              size="lg"
-              className="[&>label>span]:font-medium"
-              inputClassName="text-sm"
-              {...register('password')}
-              error={errors.password?.message}
-            />
-            <div className="flex items-center justify-between pb-2">
-              <Checkbox
-                {...register('rememberMe')}
-                label="Remember Me"
-                variant="flat"
-                className="[&>label>span]:font-medium"
-              />
-              <Link
-                href={routes.auth.forgotPassword1}
-                className="h-auto p-0 text-sm font-semibold text-blue underline transition-colors hover:text-gray-900 hover:no-underline"
-              >
-                Forget Password?
-              </Link>
-            </div>
-            <Button className="w-full" type="submit" size="lg">
-              <span>Sign in</span>{' '}
-              <PiArrowRightBold className="ms-2 mt-0.5 h-6 w-6" />
-            </Button>
-          </div>
-        )}
-      </Form>
-      <Text className=" flex items-center justify-center gap-1 mt-6 text-center leading-loose text-gray-500 lg:mt-8 lg:text-start">
-        Don’t have an account?{' '}
-        <Link
-          href={routes.auth.signUp1}
-          className="font-semibold text-gray-700 transition-colors hover:text-blue"
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+      {/* Server error */}
+      {serverError && (
+        <div className="flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
+          <PiWarningCircle className="mt-0.5 shrink-0 text-lg text-red-500" />
+          <p className="text-sm text-red-600">{serverError}</p>
+        </div>
+      )}
+
+      {/* Email */}
+      <div>
+        <label
+          htmlFor="email"
+          className="mb-1.5 block text-sm font-medium text-gray-700"
         >
-          Sign Up
-        </Link>
-      </Text>
-    </>
+          Email
+        </label>
+        <input
+          {...register('email')}
+          id="email"
+          type="email"
+          autoComplete="email"
+          placeholder="email@example.com"
+          disabled={isLoading}
+          className={`w-full rounded-xl border px-4 py-3 text-sm outline-none transition-colors placeholder:text-gray-400 disabled:bg-gray-50 disabled:opacity-70
+            ${errors.email
+              ? 'border-red-400 focus:border-red-400 focus:ring-1 focus:ring-red-400'
+              : 'border-gray-200 focus:border-[#112855] focus:ring-1 focus:ring-[#112855]'
+            }`}
+        />
+        {errors.email && (
+          <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>
+        )}
+      </div>
+
+      {/* Password */}
+      <div>
+        <label
+          htmlFor="password"
+          className="mb-1.5 block text-sm font-medium text-gray-700"
+        >
+          Parol
+        </label>
+        <div className="relative">
+          <input
+            {...register('password')}
+            id="password"
+            type={showPassword ? 'text' : 'password'}
+            autoComplete="current-password"
+            placeholder="••••••••"
+            disabled={isLoading}
+            className={`w-full rounded-xl border px-4 py-3 pr-11 text-sm outline-none transition-colors placeholder:text-gray-400 disabled:bg-gray-50 disabled:opacity-70
+              ${errors.password
+                ? 'border-red-400 focus:border-red-400 focus:ring-1 focus:ring-red-400'
+                : 'border-gray-200 focus:border-[#112855] focus:ring-1 focus:ring-[#112855]'
+              }`}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            tabIndex={-1}
+          >
+            {showPassword ? (
+              <PiEyeSlash className="text-lg" />
+            ) : (
+              <PiEye className="text-lg" />
+            )}
+          </button>
+        </div>
+        {errors.password && (
+          <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>
+        )}
+      </div>
+
+      {/* Submit */}
+      <button
+        type="submit"
+        disabled={isLoading}
+        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#112855] py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0B1E40] disabled:cursor-not-allowed disabled:opacity-70"
+      >
+        {isLoading ? (
+          <>
+            <PiSpinnerGap className="animate-spin text-lg" />
+            Kirish...
+          </>
+        ) : (
+          'Kirish'
+        )}
+      </button>
+    </form>
   );
 }

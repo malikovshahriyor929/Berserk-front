@@ -1,10 +1,5 @@
-import AppointmentDashboard from '@/app/shared/appointment/dashboard';
-import { metaObject } from '@/config/site.config';
-
-export const metadata = {
-  ...metaObject("Dashboard"),
-};
+import { redirect } from 'next/navigation';
 
 export default function DashboardPage() {
-  return <AppointmentDashboard />;
+  redirect('/financial/dashboard');
 }
