@@ -30,7 +30,7 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions as any);
   const { locale } = await params;
   const messages = await getMessages();
   return (
