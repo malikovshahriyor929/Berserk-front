@@ -1,6 +1,6 @@
 'use client';
 
-import logoImg from '@public/logo-tashabbus-blue.png';
+import logoImg from '@public/logo.png';
 import Image from 'next/image';
 import {Link} from '@/i18n/routing';
 import { Button, Title } from 'rizzui';

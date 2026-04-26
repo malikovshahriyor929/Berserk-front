@@ -2,7 +2,7 @@ import Image from 'next/image';
 import SignInForm from './sign-in-form';
 import AuthWrapperOne from '@/app/shared/auth-layout/auth-wrapper-one';
 import UnderlineShape from '@core/components/shape/underline';
-import logoImg from '@public/logo-tashabbus-blue.png';
+import logoImg from '@public/logo.png';
 
 import { metaObject } from '@/config/site.config';
 

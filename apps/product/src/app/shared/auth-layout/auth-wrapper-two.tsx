@@ -4,7 +4,7 @@ import {Link} from '@/i18n/routing';
 import Image from 'next/image';
 import { Avatar, Title, Text, Button } from 'rizzui';
 import cn from '@core/utils/class-names';
-import logoImg from '@public/logo-tashabbus-blue.png';
+import logoImg from '@public/logo.png';
 import starImg from '@public/auth/star.svg';
 import { usePathname } from 'next/navigation';
 import { routes } from '@/config/routes';

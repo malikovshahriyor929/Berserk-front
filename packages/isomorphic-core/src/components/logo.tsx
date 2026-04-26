@@ -7,12 +7,13 @@ interface IconProps extends React.SVGProps<SVGSVGElement> {
 export default function Logo({ iconOnly = false, ...props }: IconProps) {
   return (
     <Image
-      src="/logo-tashabbus-blue.png"
+      src="/logo.png"
       alt="Tashabbus Logo"
-      width={iconOnly ? 48 : 155}
+      width={155}
       height={iconOnly ? 26 : 28}
       priority
-      className={iconOnly ? "h-8 w-auto" : "h-8 w-auto"}
+
+      className={iconOnly ? "h-8 w-auto min-w-[100px] object-contain" : "h-8 w-auto min-w-[100px] object-contain" }
     ></Image>
   );
 }

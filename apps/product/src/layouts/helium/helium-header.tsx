@@ -1,41 +1,76 @@
 'use client';
 
-import { ActionIcon } from 'rizzui/action-icon';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useParams, usePathname } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 import cn from '@core/utils/class-names';
-import ProfileMenu from '@/layouts/profile-menu';
-import HamburgerButton from '@/layouts/hamburger-button';
-import Logo from '@core/components/logo';
-import { Link } from '@/i18n/routing';
-import Sidebar from './helium-sidebar';
-import StyledThemeSwitch from '../settings/theme-switcher';
+import { Button } from 'rizzui/button';
 
-function HeaderMenuRight() {
-  return (
-    <div className="ms-auto flex shrink-0 items-center gap-3">
-      <StyledThemeSwitch />
-      <ProfileMenu />
-    </div>
-  );
+const navItems = [
+  { href: '/financial/dashboard', label: 'Dashboard' },
+  { href: '/financial/upload', label: 'Yuklash' },
+  { href: '/financial/files', label: 'Fayllar' },
+  { href: '/financial/analyses', label: 'Tahlillar' },
+  { href: '/financial/reports', label: 'Hisobotlar' },
+];
+
+function normalizeLocale(locale: string | string[] | undefined) {
+  if (Array.isArray(locale)) return locale[0] ?? 'en';
+  return locale ?? 'en';
 }
 
 export default function Header() {
+  const pathname = usePathname();
+  const params = useParams();
+  const locale = normalizeLocale(params.locale);
+
   return (
-    <header className="sticky top-0 z-[990] flex items-center bg-mainBlue-0/80 px-4 py-4 backdrop-blur-xl dark:bg-gray-50/50 md:px-5 lg:px-6 xl:-ms-1.5 xl:pl-4 2xl:-ms-0 2xl:py-5 2xl:pl-6 3xl:px-8 3xl:pl-6 4xl:px-10 4xl:pl-9">
-      <div className="flex w-full max-w-2xl items-center">
-        <HamburgerButton
-          view={
-            <Sidebar className="static w-full xl:p-0 2xl:w-full [&>div]:xl:rounded-none" />
-          }
-        />
-        <Link
-          href="/"
-          aria-label="Site Logo"
-          className="me-2 w-8 shrink-0 lg:me-5 xl:hidden"
-        >
-          <Logo iconOnly={true} />
-        </Link>
+    <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur xl:hidden">
+      <div className='flex items-start justify-between px-4 py-4 md:px-5 lg:px-6'>
+        <div className="">
+          <div className="mb-4 flex items-center gap-3">
+            <Image
+              src="/logo.png"
+              alt="Berserk"
+              width={34}
+              height={34}
+              className="rounded-xl"
+            />
+            <div>
+              <p className="text-sm font-semibold text-slate-900">
+                Financial Suite
+              </p>
+              <p className="text-xs text-slate-500">Moliyaviy boshqaruv</p>
+            </div>
+          </div>
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {navItems.map((item) => {
+              const href = `/${locale}${item.href}`;
+              const isActive =
+                pathname === href || pathname.startsWith(`${href}/`);
+
+              return (
+                <Link
+                  key={item.href}
+                  href={href}
+                  className={cn(
+                    'whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium transition-colors',
+                    isActive
+                      ? 'border-[#112855] bg-[#112855] text-white'
+                      : 'border-slate-200 bg-white text-slate-600'
+                  )}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+        <Button onClick={() => signOut({ callbackUrl: '/en/auth/login' })}>
+          Log out
+        </Button>
       </div>
-      <HeaderMenuRight />
     </header>
   );
 }

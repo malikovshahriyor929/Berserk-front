@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import logoImg from '@public/logo-tashabbus-blue.png';
+import logoImg from '@public/logo.png';
 import Image from 'next/image';
 import { Button, Title, Text } from 'rizzui';
 import { PiAppleLogoFill, PiArrowLeftBold } from 'react-icons/pi';

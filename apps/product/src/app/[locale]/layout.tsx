@@ -2,8 +2,6 @@ import { Toaster } from 'react-hot-toast';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth-options';
 import AuthProvider from '@/app/api/auth/[...nextauth]/auth-provider';
-import GlobalDrawer from '@/app/shared/drawer-views/container';
-import GlobalModal from '@/app/shared/modal-views/container';
 import { JotaiProvider, ThemeProvider } from '@/app/shared/theme-provider';
 import { siteConfig } from '@/config/site.config';
 import { inter, lexendDeca } from '@/app/fonts';
@@ -55,8 +53,6 @@ export default async function RootLayout({
               <JotaiProvider>
                 {children}
                 <Toaster />
-                <GlobalDrawer />
-                <GlobalModal />
               </JotaiProvider>
             </ThemeProvider>
           </NextIntlClientProvider>
