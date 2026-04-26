@@ -94,7 +94,7 @@ export const authOptions: NextAuthOptions = {
             refreshToken,
           };
         } catch (err: any) {
-          throw new Error(err?.message || 'Login amalga oshmadi');
+          throw new Error(`${err?.message || 'Login amalga oshmadi'} (URL: ${BERSERK_API})`);
         }
       },
     }),
