@@ -195,3 +195,103 @@ export interface CreateReportTemplatePayload {
   htmlTemplate?: string;
   isDefault?: boolean;
 }
+
+// ===== Forecast =====
+
+export type ForecastHorizon = 'NEXT_MONTH' | 'NEXT_QUARTER' | 'NEXT_YEAR' | 'CUSTOM';
+export type ForecastScenario = 'CONSERVATIVE' | 'BASE' | 'OPTIMISTIC';
+export type ForecastStatus = 'PENDING' | 'RUNNING' | 'SUCCESS' | 'FAILED' | 'INSUFFICIENT_DATA';
+export type ForecastIssueType =
+  | 'DATA_QUALITY'
+  | 'MISSING_VALUE'
+  | 'INVALID_DATE'
+  | 'INVALID_NUMBER'
+  | 'DUPLICATE_ROW'
+  | 'OUTLIER'
+  | 'TREND_BREAK'
+  | 'INSUFFICIENT_HISTORY'
+  | 'MODEL_WARNING'
+  | 'CRITICAL_ERROR';
+
+export type ForecastIssueSeverity = 'LOW' | 'MEDIUM' | 'HIGH';
+
+export interface ForecastRun {
+  id: string;
+  userId: string;
+  uploadId: string;
+  analysisId?: string;
+  status: ForecastStatus;
+  horizon: ForecastHorizon;
+  customPeriods?: number;
+  periodUnit?: string;
+  targetMetric?: string;
+  scenario: ForecastScenario;
+  inputSummary?: any;
+  baselineJson?: any;
+  resultJson?: any;
+  resultText?: string;
+  errorMessage?: string;
+  modelName?: string;
+  tokenUsage?: any;
+  startedAt?: string;
+  completedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+  upload?: { originalName: string; uploadedAt?: string };
+  points?: ForecastPoint[];
+  issues?: ForecastIssue[];
+  _count?: {
+    points: number;
+    issues: number;
+  };
+}
+
+export interface ForecastPoint {
+  id: string;
+  forecastRunId: string;
+  period: string;
+  periodStart?: string;
+  periodEnd?: string;
+  metricKey: string;
+  metricLabel?: string;
+  predictedValue: number;
+  lowerBound?: number;
+  upperBound?: number;
+  confidence?: number;
+  scenario: ForecastScenario;
+  explanation?: string;
+  createdAt: string;
+}
+
+export interface ForecastIssue {
+  id: string;
+  forecastRunId: string;
+  type: ForecastIssueType;
+  severity: ForecastIssueSeverity;
+  title: string;
+  description: string;
+  recommendation?: string;
+  rowReference?: string;
+  fieldReference?: string;
+  createdAt: string;
+}
+
+export interface ForecastReadiness {
+  canForecast: boolean;
+  reason: string | null;
+  historyPeriods: number;
+  dateCoverage: {
+    start: string | null;
+    end: string | null;
+  };
+  detectedMetrics: Array<{
+    key: string;
+    label: string;
+    series: Array<{ period: string; value: number }>;
+  }>;
+  baselineForecast: {
+    method: string;
+    points: any[];
+  };
+  dataQualityIssues: any[];
+}

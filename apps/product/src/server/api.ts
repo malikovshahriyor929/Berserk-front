@@ -13,6 +13,12 @@ import type {
   GeneratedReport,
   GenerateReportPayload,
   CreateReportTemplatePayload,
+  ForecastRun,
+  ForecastPoint,
+  ForecastIssue,
+  ForecastReadiness,
+  ForecastHorizon,
+  ForecastScenario,
 } from '@/app/shared/financial/types';
 
 // ===== Existing API (old backend) =====
@@ -304,6 +310,41 @@ export async function getReports(): Promise<GeneratedReport[]> {
 export async function getReport(id: string): Promise<GeneratedReport> {
   const res = await berserkApi.get(`/api/reports/${id}`);
   return unwrapData<GeneratedReport>(res);
+}
+
+// ===== Forecasts =====
+
+export async function runForecast(payload: {
+  uploadId: string;
+  horizon: ForecastHorizon;
+  scenario?: ForecastScenario;
+  targetMetric?: string;
+  customPeriods?: number;
+  periodUnit?: string;
+}): Promise<ForecastRun> {
+  const res = await berserkLongRunningApi.post('/api/forecasts/run', payload);
+  return unwrapData<ForecastRun>(res);
+}
+
+export async function getForecasts(): Promise<ForecastRun[]> {
+  const res = await berserkApi.get('/api/forecasts');
+  return unwrapData<ForecastRun[]>(res);
+}
+
+export async function getForecast(id: string): Promise<ForecastRun> {
+  const res = await berserkApi.get(`/api/forecasts/${id}`);
+  return unwrapData<ForecastRun>(res);
+}
+
+export async function deleteForecast(id: string): Promise<void> {
+  await berserkApi.delete(`/api/forecasts/${id}`);
+}
+
+export async function getForecastReadiness(
+  uploadId: string
+): Promise<ForecastReadiness> {
+  const res = await berserkApi.get(`/api/forecasts/readiness/${uploadId}`);
+  return unwrapData<ForecastReadiness>(res);
 }
 
 export async function downloadReport(

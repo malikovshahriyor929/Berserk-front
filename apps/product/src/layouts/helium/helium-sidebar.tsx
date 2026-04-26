@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, usePathname } from 'next/navigation';
-import { HiArrowUpTray, HiChartPie, HiDocumentChartBar, HiDocumentText, HiFolder, HiSparkles } from 'react-icons/hi2';
+import { HiArrowUpTray, HiChartPie, HiDocumentChartBar, HiDocumentText, HiFolder, HiSparkles, HiPresentationChartLine } from 'react-icons/hi2';
 import cn from '@core/utils/class-names';
 
 const navItems = [
@@ -11,8 +11,9 @@ const navItems = [
   { href: '/financial/upload', label: 'Fayl yuklash', icon: HiArrowUpTray },
   { href: '/financial/files', label: 'Fayllar', icon: HiFolder },
   { href: '/financial/analyses', label: 'AI tahlillar', icon: HiSparkles },
-  { href: '/financial/reports', label: 'Hisobotlar', icon: HiDocumentText },
+  { href: '/financial/forecasts', label: 'Prognozlar', icon: HiPresentationChartLine },
   { href: '/financial/templates', label: 'Shablonlar', icon: HiDocumentChartBar },
+  { href: '/financial/reports', label: 'Hisobotlar', icon: HiDocumentText },
 ];
 
 type SidebarProps = {

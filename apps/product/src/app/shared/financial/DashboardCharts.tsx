@@ -103,11 +103,11 @@ export default function DashboardCharts({ data }: { data: DashboardChartsType })
         {trendData.length === 0 ? (
           <EmptyChart />
         ) : (
-          <ResponsiveContainer width="100%" height={220}>
+          <ResponsiveContainer width="100%" height={220} >
             <BarChart data={trendData} margin={{ top: 4, right: 8, bottom: 0, left: -20 }} barCategoryGap="30%">
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
               <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: '#9CA3AF' }} axisLine={false} tickLine={false} tickFormatter={numFmt} />
+              <YAxis tick={{ fontSize: 11, fill: '#9CA3AF' }} axisLine={false} tickLine={false} tickFormatter={numFmt} className='pl-4' />
               <Tooltip content={<CustomTooltip />} />
               <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, paddingTop: 12 }} />
               <Bar dataKey="income" name="Kirim" fill="#16A34A" radius={[4, 4, 0, 0]} maxBarSize={28} />

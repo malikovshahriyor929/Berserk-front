@@ -76,6 +76,8 @@ export const routes = {
     templateDetails: (id: string) => `/financial/templates/${id}`,
     reports: '/financial/reports',
     reportDetails: (id: string) => `/financial/reports/${id}`,
+    forecasts: '/financial/forecasts',
+    forecastDetails: (id: string) => `/financial/forecasts/${id}`,
   },
   podcast: {
     dashboard: '/podcast',
