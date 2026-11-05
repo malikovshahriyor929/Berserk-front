@@ -1,6 +1,4 @@
-from pathlib import Path
-
-readme = r"""# Berserk Frontend — Financial Reporting, AI Analysis & Forecast Dashboard
+# Berserk Frontend — Financial Reporting, AI Analysis & Forecast Dashboard
 
 Berserk Frontend is a production-ready Next.js dashboard for the financial reporting platform.  
 It connects to the Berserk backend and allows users to upload Excel/CSV files, run AI-powered financial analysis, generate PDF reports, view dashboards, manage report templates, and create financial forecasts based on historical spreadsheet data.
@@ -16,29 +14,6 @@ It connects to the Berserk backend and allows users to upload Excel/CSV files, r
 - [Environment Variables](#environment-variables)
 - [Installation](#installation)
 - [Available Scripts](#available-scripts)
-- [Development](#development)
-- [Build](#build)
-- [Backend Connection](#backend-connection)
-- [Authentication](#authentication)
-- [Financial Module Routes](#financial-module-routes)
-- [Sidebar Navigation](#sidebar-navigation)
-- [API Client](#api-client)
-- [Dashboard](#dashboard)
-- [Excel Upload](#excel-upload)
-- [Uploaded Files](#uploaded-files)
-- [AI Analyses](#ai-analyses)
-- [Forecasts](#forecasts)
-- [Report Templates](#report-templates)
-- [PDF Reports](#pdf-reports)
-- [Shared Components](#shared-components)
-- [Design System](#design-system)
-- [Status and Severity Colors](#status-and-severity-colors)
-- [UX Rules](#ux-rules)
-- [Error Handling](#error-handling)
-- [Testing Flow](#testing-flow)
-- [Production Checklist](#production-checklist)
-- [Deployment Notes](#deployment-notes)
-- [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -158,3 +133,33 @@ Berserk-front/
 ├── package.json
 ├── pnpm-workspace.yaml
 └── turbo.json
+```
+
+## Environment Variables
+
+Create `apps/product/.env.local`:
+
+```bash
+NEXT_PUBLIC_API_URL=https://your-api.example.com
+NEXT_PUBLIC_BERSERK_API_URL=https://your-berserk-backend.example.com
+```
+
+## Installation
+
+The repository is a pnpm + Turborepo monorepo (pnpm 9).
+
+```bash
+pnpm install
+pnpm dev
+```
+
+## Available Scripts
+
+| Command | What it does |
+|---|---|
+| `pnpm dev` | Start all apps in development mode |
+| `pnpm build` | Build all apps |
+| `pnpm start` | Run the production builds |
+| `pnpm lint` | Lint all apps |
+| `pnpm type:check` | Type-check all apps |
+| `pnpm clean` | Remove build output and `node_modules` |
